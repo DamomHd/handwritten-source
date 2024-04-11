@@ -3,8 +3,8 @@
  * @version: v1.0
  * @Author: hongda_huang
  * @Date: 2020-11-16 11:20:25
- * @LastEditors: Please set LastEditors
- * @LastEditTime: 2021-03-19 15:51:23
+ * @LastEditors: Damom Hd 33109486+DamomHd@users.noreply.github.com
+ * @LastEditTime: 2024-04-11 12:24:30
  * @description:
  */
 
@@ -361,9 +361,7 @@ myPromise.prototype.then = function (onFulfilled, onRejected) {
                 }
             })
         }))
-        onRejected(error)
     }
-    return this
 }
 
 myPromise.prototype.catch = function (onRejected) {
@@ -472,5 +470,8 @@ myPromise.any = function(promises) {
         }
     })
 }
+
+
+// 测试
 
 
