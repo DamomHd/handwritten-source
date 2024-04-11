@@ -1,15 +1,17 @@
 /**求重复子串的最大长度 'aaaabbbbbccddd' */
 function getRepeatStrLen1(s) {
   let map = new Map();
-  let max = 0
+  let max = 0, curentKey = '';
   for(let t of s) {
-    if(map.has(t)){
+    if(map.has(t) && curentKey === t){
       map.set(t, map.get(t) + 1)
     } else {
+      curentKey = t
       map.set(t, 1)
     }
     max = Math.max(max, map.get(t))
   }
+
   return max
 }
 
@@ -26,4 +28,19 @@ function getRepeatStrLen2(s) {
   }
   return max
 }
-console.log(getRepeatStrLen2('aaaabbbbbccddd'))
+console.log(getRepeatStrLen1('aaaaaabbbbb'))
+
+
+/**爬楼梯 */
+function getFlightLen(n) {
+  const dp = [];
+  dp[0] = 1;
+  dp[1] = 1;
+  for(let i = 2; i <= n; i++) {
+    //dp[2] = dp[1]+dp[0] => 2 = 1 + 1
+    dp[i] = dp[i-1] + dp[i-2]
+  }
+
+  return dp[n]
+}
+console.log(getFlightLen(3));
