@@ -82,3 +82,59 @@ function sleep(delay) {
 (async () => {
 	await sleep(3000)
 })()
+
+
+
+/**
+ * @description: 实现最多并发2个
+ * @param {*} this
+ * @param {*} resolve
+ * @param {*} resolve
+ * @param {*} time
+ * @param {*} order
+ * @return {*}
+ */
+class Scheduler {
+  constructor() {
+    this.queue =[]; // 当前任务队列
+    this.maxCount = 2; // 最多并发数
+    this.runingCount = 0; // 当前并发数
+  }
+
+  add(promiseCreator) {
+    return new Promise((resolve) => {
+      this.queue.push({
+        promiseCreator,
+        resolve
+      })
+      this.schedule();
+    })
+  }
+  schedule() {
+    if(this.runingCount < this.maxCount &&  this.queue.length ) {
+      const {promiseCreator, resolve} = this.queue.shift();
+      this.runingCount++; // 开始执行新任务
+      promiseCreator().then(() => {
+        resolve();
+        this.runingCount--; //任务执行完毕后
+        this.schedule() // 执行下一个任务
+      })
+      this.schedule();
+    }
+  }
+}
+const timeout = (time) => new Promise(resolve => {
+  setTimeout(resolve, time)
+})
+const scheduler = new Scheduler()
+const addTask = (time, order) => {
+  scheduler.add(() => timeout(time)).then(() => console.log(order))
+}
+addTask(1000, '1')
+addTask(500, '2')
+addTask(300, '3')
+addTask(400, '4')
+// output: 2 3 1 4
+
+
+//实现深拷贝

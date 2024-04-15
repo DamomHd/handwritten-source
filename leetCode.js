@@ -32,9 +32,14 @@ console.log(getRepeatStrLen1('aaaaaabbbbb'))
 
 
 /**爬楼梯 */
+/**
+ * @description: 
+ * @param {*} n
+ * @return {*}
+ */
 function getFlightLen(n) {
   const dp = [];
-  dp[0] = 1;
+  dp[0] = 1; // 兜底第2阶
   dp[1] = 1;
   for(let i = 2; i <= n; i++) {
     //dp[2] = dp[1]+dp[0] => 2 = 1 + 1
@@ -44,3 +49,29 @@ function getFlightLen(n) {
   return dp[n]
 }
 console.log(getFlightLen(3));
+
+
+/**
+ * @description: 快排
+ * @param {*} arr
+ * @param {*} right
+ * @param {*} pivot
+ * @param {array} quickSort
+ * @return {*}
+ */
+function quickSort(arr) {
+  if(arr.length <= 1) return arr;
+
+  let pivot = arr[0];
+  let left = [], right = [];
+
+  for(let i = 1; i < arr.length; i++) {
+    if(arr[i] < pivot) {
+      left.push(arr[i])
+    } else {
+      right.push(arr[i])
+    }
+  }
+
+  return [...quickSort(left), pivot, ...quickSort(right)]
+}
