@@ -138,3 +138,13 @@ addTask(400, '4')
 
 
 //实现深拷贝
+
+
+/**
+ * @description: 函数柯里化
+ * @return {*}
+ */
+function compose(...fns) {
+  if(fns.length == 1) return fns[0]
+  return fns.reduce((result, fn) => (...args) => result(fn(...args)))
+}

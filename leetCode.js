@@ -75,3 +75,29 @@ function quickSort(arr) {
 
   return [...quickSort(left), pivot, ...quickSort(right)]
 }
+
+
+/**
+ * @description: 20.有效括号
+ * @param {*} s
+ * @return {*}
+ */
+function isValid(s) {
+  if(s % 2) return false;
+  const stack = []
+  const map = new Map([
+    ["}", "{"],
+    ["]", "["],
+    [")", "("]
+  ]);
+
+  for(let v of s) {
+    if(map.has(v)) {
+      if(stack[stack.length - 1] !== map.get(v)) return false
+      stack.pop()
+    } else {
+      stack.push(v)
+    }
+  }
+  return !stack.length;
+}
