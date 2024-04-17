@@ -148,3 +148,109 @@ function compose(...fns) {
   if(fns.length == 1) return fns[0]
   return fns.reduce((result, fn) => (...args) => result(fn(...args)))
 }
+
+
+
+// 假定有一个changeName异步请求，有一个很长的name数组，需要做分片请求，要求分片里的更新是并行的，各个分片间是串行的，这个函数接受三个参数，名字列表，分片的数量，每次分片后的等待时间。
+
+const changeName = name => new Promise((resolve, reject) => {
+   setTimeout(() => resolve(name), 1000);
+ });
+ const sleep = secs => new Promise((resolve, reject) => {
+    setTimeout(resolve, secs);
+ });
+
+const slicePostTask = async(names, chunkSize, waitingSecs) => {
+  for(let i = 0; i < names.length; i + chunkSize -1) {
+    await sleep(waitingSecs)
+    const runArr = names.splice(i, chunkSize)
+    const fn = runArr.map(name => changeName(name))
+    const res = await Promise.all(fn)
+    console.log(res)
+  }
+};
+
+slicePostTask(['aa', 'bb', 'cc', 'dd', 'ee', 'ff', 'gg', 'hh'], 2, 2000);
+// =>  [ 'aa', 'bb' ]
+// waiting 2 seconds
+// =>  [ 'cc', 'dd' ]
+// waiting 2 seconds
+// => [ 'ee', 'ff' ]
+// waiting 2 seconds
+// => [ 'gg', 'hh' ]
+
+
+
+
+function timeout(time) {
+  return new Promise(resolve => {
+      setTimeout(() => {
+          resolve();
+      }, time);
+   });
+}
+function addTask(time, name) {
+  superTask.add(() => timeout(time)).then(() => {
+      console.log(`任务${name}完成`);
+  });
+}
+
+
+
+class SuperTask {
+  constructor() {
+    this.limit = 2;
+    this.count = 0; // 当前执行任务数
+    this.tasks = [];
+  }
+
+  add(task) {
+    this.tasks.push(task);
+    this.runTask()
+  }
+
+  runTask() {
+    if(this.limit > this.count){
+      this.count++;
+      const task = this.tasks.shift();
+      task().then(() => {
+        this.count--;
+        this.runTask()
+      })
+    }
+  }
+}
+const superTask = new SuperTask();
+
+addTask(10000, 1); // 10000ms后输出 任务1完成
+addTask(5000, 2); // 5000ms后输出 任务1完成
+addTask(3000, 3); // 8000ms后输出 任务3完成
+addTask(4000, 4); // 11000ms后输出 任务4完成
+addTask(5000, 5); // 15000ms后输出 任务5完成
+
+
+
+/**
+ * @description: 微信发红包伪代码
+ * @param {*} totalAmount
+ * @param {*} numPeople
+ * @return {*}
+ */
+function generateRandomAmount(totalAmount, numPeople) {
+  let min = 1; // 每个人至少能领取1分钱
+  let result = [];
+
+  for (let i = 0; i < numPeople - 1; i++) {
+      // 生成一个介于min和max之间的随机数
+      let max = totalAmount - numPeople + i + 1; // 更新max的计算方式  至少保证每个人都能有1分钱
+      let amount = Math.floor(Math.random() * (max - min + 1)) + min;
+      result.push(amount);
+      totalAmount -= amount;
+  }
+
+  // 最后一个人领取剩下的金额
+  result.push(totalAmount);
+  return result;
+}
+
+console.log(generateRandomAmount(100, 5));
