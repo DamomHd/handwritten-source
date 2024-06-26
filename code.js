@@ -254,3 +254,36 @@ function generateRandomAmount(totalAmount, numPeople) {
 }
 
 console.log(generateRandomAmount(100, 5));
+
+
+
+//
+
+
+
+
+/**
+ * @description: 实现loadsh get方法
+ * @param {*} obj
+ * @param {*} path
+ * @param {*} defaultValue
+ * @return {*}
+ */
+function loadshGet(obj, path, defaultValue) {
+
+  let keys = typeof path === 'string' ? path.split('.') : path;
+
+  let result = obj;
+
+  for(let k of keys) {
+    if(result[k]) {
+      result = result[k]
+    } else {
+      result = defaultValue
+    }
+  }
+  return result
+}
+var object = { a: { b: { c: 3 } } };;
+console.log(loadshGet(object, ['a','b','c']), loadshGet(object, 'a.b.c'))
+
