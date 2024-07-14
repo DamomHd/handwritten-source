@@ -64,6 +64,13 @@ for(let i = 0; i < arr.length; i++) {
 }
 return tree;
 }
+function arrayToTree1(arr, parentId = null) {
+  return arr.filter(item => item.pid === parentId)
+    .map(item => ({
+      ...item,
+      children: arrayToTree1(arr, item.id)
+    }))
+}
 
 /**  手写sleep */
 // 1、通过timeout
@@ -119,7 +126,7 @@ class Scheduler {
         this.runingCount--; //任务执行完毕后
         this.schedule() // 执行下一个任务
       })
-      this.schedule();
+      // this.schedule();
     }
   }
 }
@@ -130,10 +137,10 @@ const scheduler = new Scheduler()
 const addTask = (time, order) => {
   scheduler.add(() => timeout(time)).then(() => console.log(order))
 }
-addTask(1000, '1')
+addTask(500, '1')
 addTask(500, '2')
-addTask(300, '3')
-addTask(400, '4')
+addTask(500, '3')
+addTask(500, '4')
 // output: 2 3 1 4
 
 
@@ -257,10 +264,6 @@ console.log(generateRandomAmount(100, 5));
 
 
 
-//
-
-
-
 
 /**
  * @description: 实现loadsh get方法
@@ -287,3 +290,43 @@ function loadshGet(obj, path, defaultValue) {
 var object = { a: { b: { c: 3 } } };;
 console.log(loadshGet(object, ['a','b','c']), loadshGet(object, 'a.b.c'))
 
+
+function deepClone(obj, map = new WeakMap()) {
+  if (typeof obj !== 'object' || obj === null) {
+    return obj; // 基本类型直接返回
+  }
+
+  if (map.has(obj)) {
+    return map.get(obj); // 遇到循环引用，直接返回已复制的对象
+  }
+
+  let clone;
+  if (Array.isArray(obj)) {
+    clone = []; // 复制数组
+  } else {
+    clone = {}; // 复制对象
+  }
+
+  map.set(obj, clone); // 将原始对象和复制对象放入 Map 中
+
+  for (let key in obj) {
+    console.log(key)
+    if (obj.hasOwnProperty(key)) {
+      clone[key] = deepClone(obj[key], map); // 递归复制属性
+    }
+  }
+
+  return clone;
+}
+
+// // 测试
+// const obj = [{
+//   name: 'John',
+//   friend: null
+// }];
+
+// obj.friend = obj;
+
+// const copiedObj = deepClone(obj);
+
+// console.log('copiedObj:', JSON.stringify(copiedObj)); // 输出正确的拷贝结果
