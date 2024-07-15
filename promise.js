@@ -27,12 +27,12 @@ one()
 //timeout 2
 
 // 正确
-//last line1
+// last line1
 // Promise!
 // two Promise!
 // last line2
 // timeout 1
-//timeout 2
+// timeout 2
 
 
 async function async1() {

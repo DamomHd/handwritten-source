@@ -148,7 +148,7 @@ addTask(500, '4')
 
 
 /**
- * @description: 函数柯里化
+ * @description: 组合多个函数
  * @return {*}
  */
 function compose(...fns) {
@@ -156,7 +156,20 @@ function compose(...fns) {
   return fns.reduce((result, fn) => (...args) => result(fn(...args)))
 }
 
+// 函数柯里化
+function curry(fn, args) {
+  let length = fn.length;
 
+  args = args || []
+  return function() {
+    const newArgs = [...args, ...arguments];
+    if(newArgs.legnth >= length) {
+      return fn.apply(this, ...newArgs)
+    } else {
+      return curry(fn, newArgs)
+    }
+  }
+}
 
 // 假定有一个changeName异步请求，有一个很长的name数组，需要做分片请求，要求分片里的更新是并行的，各个分片间是串行的，这个函数接受三个参数，名字列表，分片的数量，每次分片后的等待时间。
 
