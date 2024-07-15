@@ -4,7 +4,7 @@
  * @Author: hongda_huang
  * @Date: 2020-11-16 11:20:25
  * @LastEditors: Damom Hd 33109486+DamomHd@users.noreply.github.com
- * @LastEditTime: 2024-04-11 12:24:30
+ * @LastEditTime: 2024-07-15 15:52:11
  * @description:
  */
 
@@ -82,15 +82,12 @@ Function.prototype.myApply = function (context = window, args) {
  * @Date: 2020-11-16 11:54:28
  */
 Function.prototype.myBind = function (context = window, ...args) {
-    let self = this
-    let fBound = function () {
-        return self.apply(
-            this instanceof fBound ? this : context,
-            args.concat(Array.prototype.slice.call(arguments))
-        )
+    context.fnc = this;
+    return function () {
+        const res = context.fnc(...args, ...arguments)
+        delete context.fnc;
+        return res
     }
-    fBound.prototype = Object.create(this.prototype)
-    return fBound
 }
 
 /**
