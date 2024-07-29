@@ -72,6 +72,38 @@ function arrayToTree1(arr, parentId = null) {
     }))
 }
 
+const flatArray = [
+    { id: '1', name: 'a', pid: null },
+    { id: '2', name: 'b', pid: '1' },
+    { id: '3', name: 'c', pid: '2' },
+    { id: '4', name: 'd', pid: '1' },
+    { id: '5', name: 'e', pid: '2' },
+    { id: '6', name: 'f', pid: '3' }
+];
+
+function arrayToTree2(list) {
+  const map = new Map();
+  const roots = [];
+  list.forEach(item => {
+    map.set(item.id, {...item, children: []})
+  });
+
+  list.forEach(item => {
+    if(!item.pid) {
+      roots.push(map.get(item.id))
+    } else {
+      if(map.has(item.pid)) {
+        map.get(item.pid).children.push(map.get(item.id))
+      }
+    }
+  })
+
+  return roots
+}
+// 转换为树形结构
+const tree = arrayToTree2(flatArray);
+console.log(JSON.stringify(tree, null, 2));
+
 /**  手写sleep */
 // 1、通过timeout
 function sleep(timer) {
@@ -343,3 +375,102 @@ function deepClone(obj, map = new WeakMap()) {
 // const copiedObj = deepClone(obj);
 
 // console.log('copiedObj:', JSON.stringify(copiedObj)); // 输出正确的拷贝结果
+
+
+// 字节 如何让 var [a, b] = {a:1, b:2}
+// Object.prototype[Symbol.iterator] = function () {
+//   return Object.values(this)[Symbol.iterator]();
+// }
+
+
+
+// 数组去重的几种方式
+/**
+ * Set() + Array.form()
+ * 两层循环 + splice
+ * 数组indexOf
+ * includes
+ * filter + indexOf
+ * Map
+ */
+
+//  数组扁平化
+/**
+ * 递归
+ * reduce
+ * 扩展运算符
+ * toString split
+ * es6 flat
+ * 正则 json
+ */
+function flatten(arr) {
+  return arr.reduce((p, c) => {
+    return p.concat(Array.isArray(c) ? flatten(c): c)
+  })
+}
+
+//对象扁平化
+/* 题目*/
+// var entryObj = {
+//   a: {
+//       b: {
+//           c: {
+//                   dd: 'abcdd'
+//           }
+//       },
+//       d: {
+//           xx: 'adxx'
+//       },
+//       e: 'ae'
+//   }
+// }
+
+// // 要求转换成如下对象
+// var outputObj = {
+// 'a.b.c.dd': 'abcdd',
+// 'a.d.xx': 'adxx',
+// 'a.e': 'ae'
+// }
+
+function flattenObject(obj) {
+  const result = {}
+  function traverse(obj, prefix = '') {
+    for(const key in obj) {
+      if(typeof obj[key] === 'object') {
+        // 对象 递归
+        traverse(obj[key], prefix ? `${prefix}.${key}` : key)
+      } else {
+        //基本类型
+        result[prefix ? `${prefix}.${key}`: key] = obj[key]
+      }
+    }
+  }
+
+  traverse(obj)
+  return result
+}
+
+var entryObj = {
+  a: {
+    b: {
+      c: {
+        dd: 'abcdd'
+      }
+    },
+    d: {
+      xx: 'adxx'
+    },
+    e: 'ae'
+  }
+};
+
+var outputObj = flattenObject(entryObj);
+console.log(outputObj);
+
+
+// 下划线转驼峰
+function camelCase(str) {
+  return str.replace(/([-_])(a-z)/g, function(match, group1, group2){
+    return group2.toUpperCase();
+  })
+}
