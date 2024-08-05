@@ -45,7 +45,7 @@ JS 调用后, 生成唯一CallbackId,存入callbacks, 待回调后执行callback
 热更实现原理核心 - webpack-dev-server
 本地启动后,再启动websocket服务,来建立本地服务和浏览器的双向通信
 监听每次webpack编译完成,调用sendStats 通过websocket给浏览器发通知,拿到hash值后做对应更新逻辑
-利用hash 调用hotDownloadManifest,发送XXX/hash.hot-update.json的请求,获取热更模块以及下次热更hash标识,进入热更准备
+利用hash 调用hotDownloadManifest,发送XXX/hash.hot-update.json的请求,获取热更模块以及下次热更hash标识,进入热更准备(DOM中添加script标签方式动态请求update.js - JSONP)
   解释下为什么是JSONP的形式:
     新编译的代码在一个webpackHotUpdate函数体内,需要立即执行
 hotApply热更新模块替换
@@ -55,3 +55,38 @@ hotApply热更新模块替换
 
 ### 监听本地文件变化 - webpack-dev-middleware
 通过compiler.watch 监听
+
+### JSONP
+事先定义一个用于获取跨域相应数据的回调函数, 并通过没有同源策略限制的script标签发起一个请求,然后服务端返回这个回调函数执行,并将需要响应的数据放到回调参数里,前端script请求到这个执行函数回调后立即执行,拿到执行结果
+
+  - 兼容性更好
+  - 只支持get 不支持post
+  - 只支持跨域http请求,不能解决不同域两个页面之间的相互调用
+
+client
+```
+function onResponse(data) {
+  console.log('接受到的回调结果', data)
+}
+
+
+var script = document.createElement('script')
+script.src = 'https://a.a.a.a/?callback=onResponse'
+document.head.appendChild(script)
+```
+
+server
+```
+app.get('/a', function (request,response) {
+  var data = getData();
+  var callback = request.query.callback;
+  var res = `${callback}(${JSON.stringify(data)});`
+  response.send(res)
+})
+```
+
+#### 安全问题
+- CSRF攻击
+  验证调用来源 Referer
+- XSS漏洞
+  严格定义Content-type: application/json、限制callback长度、字符转译
