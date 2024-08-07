@@ -28,11 +28,25 @@ JS 调用后, 生成唯一CallbackId,存入callbacks, 待回调后执行callback
 - webpack先打包后启动服务, vite则直接启动,再按需变异依赖文件
 2、对 ES module 的支持
 - 现代浏览器天然支持es module,直接在浏览器执行而不需要先打包再执行
-3、底层语言差异
-- webpack基于node构建,vite基于esbuild预构建依赖
-  esbuild优势:
+3、 热更新处理
+- webpack 依赖模块更新时,整个项目需要重新编译
+- vite 只需要浏览器重新请求对应模块即可
+  es module特性,利用浏览器缓存,针对源码模块做了协商缓存,针对三方依赖模块做了强缓存
+4、构建方式不同
+- webpack 基于node 单线程
+- vite 基于esbuild
+    esbuild优势:
     采用Go语言,纳秒级别,而node是毫秒级别.
     Go语言重度依赖内存,更快
+    多核CPU
+5、http2
+vite 并发多个请求同时加载多个模块
+
+关于vite webpack打包不一致的问题讨论: rollDown
+
+### 为什么不适用 vite 上生产
+vite开发环境适用esbuild,虽然快,但输出在构建资源优化方面有非常有限的控制能力,没太多方法控制代码拆分.
+
 #### 什么是 ES module
 通过 export import 语句, 允许在浏览器端导入导出模块
 
@@ -90,3 +104,69 @@ app.get('/a', function (request,response) {
   验证调用来源 Referer
 - XSS漏洞
   严格定义Content-type: application/json、限制callback长度、字符转译
+
+
+
+## useEffect useLaoutEffect
+
+- 执行时机
+  useEffect: 在浏览器完成DOM更新后异步执行,不会阻塞页面渲染
+  useLayoutEffect: 在浏览器渲染DOM之前同步执行,阻塞页面渲染
+
+- 使用场景
+  useEffect: 数据获取、设置定时器、操作DOM(不影响页面布局、用户体验)
+  useLayoutEffect:
+    DOM操作(会影响用户体验、页面布局)
+      DOM元素尺寸,确保DOM更新后获取准确的尺寸
+      进行动画或者过度,可以同步更新DOM,防止视觉上的闪烁、不流畅
+
+## 实现 useState
+
+```
+function useState(initialValue) {
+  let state = initialValue;
+  function setState(newState) {
+    state = newState;
+
+  }
+  return [state, setState]
+}
+```
+
+## 为什么要移除umi 是有什么能力做不到吗
+
+- 体积过大: 为了提供丰富的功能、插件,依赖的库和代码非常庞大,导致打包后体积过大
+- 配置复杂: umi配置项非常多,本为了方便开发大型项目,但也增加了学习成本,对于面向C端的移动端项目而言,过于重
+- 偏企业级: umi主要正对企业级应用场景设计,比如微前端、权限管理等,对于C端h5功能是冗余的,无形增加了项目复杂度
+
+umi限制webpack自定义,umi构建流程是固定的,无法完成特定的代码转化等额外操作
+umi偏向约定大于配置
+umi并不是webpack的替代品
+
+
+## 模块联邦
+模块加载
+代码复用
+版本管理
+
+
+## 性能优化的几个方向
+- webview 预加载
+- 渲染优化
+  预置离线包
+  并行加载
+  预加载
+  延迟加载
+  页面静态直出
+  复用webview
+- 容器优化
+  预置离线包
+- http缓存策略
+- DNS 优化
+- CDN 加速
+- 代码逻辑优化
+- 打包构建优化
+  code spliting
+  tree shaking
+  happypack
+  dll

@@ -474,3 +474,31 @@ function camelCase(str) {
     return group2.toUpperCase();
   })
 }
+
+
+class Log {
+  constructor() {
+
+  }
+
+  async log(message) {
+    const timestamp = new Date().toLocaleString();;
+    console.log(`${message} ${timestamp}`);
+    return this;
+  }
+
+  sleep(ms) {
+    // const d = new Date().getTime();
+    // while(true) {
+    //   let date = new Date().getTime();
+    //   if(date - d === ms) {
+    //     return this;
+    //   }
+    // }
+    return new Promise(resolve => setTimeout(resolve, ms)).then(() => this);
+  }
+}
+
+// 使用示例
+const l = new Log();
+l.log(1).log(2).sleep(1000).log(3).sleep(500).log(4);
