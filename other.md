@@ -180,3 +180,53 @@ https://juejin.cn/post/6844904034181070861
 uid+时间戳+签名
 
 基于 token 的用户认证是一种服务端无状态的认证方式，服务端不用存放 token 数据。用解析 token 的计算时间换取 session 的存储空间，从而减轻服务器的压力，减少频繁的查询数据库
+
+
+
+## fiber原理
+react 16版本以上的默认协调器，对react核心算法的重新实现，允许更灵活处理更新、特别是动画、布局、手势
+
+
+### 核心特性
+- 增量渲染： 渲染工作分割成多个小块，并在多个帧之间分配工作，可中断渲染（5ms）
+- 优先级调度： 为不同类型更新分配优先级，确保重要更新能够快速完成，不重要的可延迟处理
+- 可中断工作： 允许中断工作，避免掉帧现象
+
+
+### 结构
+每个节点包含了一个组件或元素，代表该组件的状态、属性、子节点信息，通过指针相互链接，形成一个树结构
+
+拥有一下几个重要属性
+
+stateNode 指向组件实例
+child sibling 指向子节点和兄弟节点 形成树结构
+return 指向父节点
+effectTag 标记该节点的更新类型（新增、删除、更新）
+
+### 工作原理
+#### 协调阶段（Renconciler）
+遍历方式实现可中断递归，分为“递” + "归"
+- 递：root节点向下深度优先遍历进行递归操作，为遍历到的每个节点调用beginWork方法，根据传入的fiber节点创建子fiber节点并连接，到叶子节点后进入“归”阶段
+
+- 归：调用 completeWork处理fiber节点，节点完成后如果存在兄弟fiber节点，会进入兄弟节点的“递”阶段，不存在则进入父系欸但的“归”阶段
+
+beginwork： 为当前节点创建子节点，在update的时候给节点打上effectTag
+complteWork： 为当前fiber节点创建真实的dom节点，并将生成好的节点插入当前的节点
+递、归交错进行，最终到rootfiber就会形成一个离屏dom树。
+最终形成一条以rootfiber为起点的单向链表
+#### 提交阶段（commit）
+commit阶段遍历render阶段形成的effectList，以及执行一些钩子函数。分别三部分
+
+- before mitation：
+  - 处理dom节点 blur、autofocu 逻辑
+  - 调用 getSnapshotBeforeUpdate 生命周期钩子
+  - 调度 useEffect
+- mutation：
+  - 根据ContentReset effectTag 重置文字节点
+  - 更新 ref
+  - 根据 effectTag 调用不同的处理函数处理fiber节点，包含（Placement\Update\Deletion\Hydrating）
+- layout：
+  - 调用生命周期函数 和 hook 相关操作
+  - 获取dom实例 赋值并更新ref
+
+重要： current fiber树的更新在mutation后， layout前
