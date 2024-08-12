@@ -502,3 +502,23 @@ class Log {
 // 使用示例
 const l = new Log();
 l.log(1).log(2).sleep(1000).log(3).sleep(500).log(4);
+
+
+// 实现一串数字转换成 带逗号 小数点的字符串
+function formatNumber(number) {
+  const numStr = Math.abs(number).toString();
+  const [integerPart, decimalPart] = numStr.split('.');
+  
+  let formattedInteger = '';
+  for (let i = 0; i < integerPart.length; i++) {
+      if (i > 0 && (integerPart.length - i) % 3 === 0) {
+          formattedInteger += ',';
+      }
+      formattedInteger += integerPart[i];
+  }
+  const absNum = formattedInteger + (decimalPart ? '.' + decimalPart : '')
+  return number < 0 ? '-' + absNum : absNum;
+}
+
+console.log(formatNumber(123456789.987))
+console.log(formatNumber(-987654321.123))

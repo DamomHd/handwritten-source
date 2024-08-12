@@ -170,3 +170,13 @@ umi并不是webpack的替代品
   tree shaking
   happypack
   dll
+
+
+
+## session cookie Token
+https://juejin.cn/post/6844904034181070861
+
+### Token
+uid+时间戳+签名
+
+基于 token 的用户认证是一种服务端无状态的认证方式，服务端不用存放 token 数据。用解析 token 的计算时间换取 session 的存储空间，从而减轻服务器的压力，减少频繁的查询数据库
