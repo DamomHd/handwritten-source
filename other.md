@@ -23,6 +23,19 @@ JS 调用后, 生成唯一CallbackId,存入callbacks, 待回调后执行callback
 
 
 
+
+## Webpack 怎么建立模块之间的依赖关系
+分析每个模块的require 或者 import 语句来实现,递归构建一个依赖图
+(也支持require.context()进行动态加载模块)
+
+根据 entry 配置信息创建若干 EntryDependency 对象
+调用NormalModuleFactory,根据 EntryDependency 对象的资源路径创建 Module 子类对象
+将 Module 代码解析成 AST 结构
+遍历 AST, 找到所有模块的导入语句 require/import
+根据导入语句创建对应的Dependency子类对象
+递归执行步骤2,直到项目处理完毕形成依赖图
+
+
 ## webpack为什么比vite慢
 1、开发模式的差异
 - webpack先打包后启动服务, vite则直接启动,再按需变异依赖文件
@@ -47,8 +60,11 @@ vite 并发多个请求同时加载多个模块
 ### 为什么不适用 vite 上生产
 vite开发环境适用esbuild,虽然快,但输出在构建资源优化方面有非常有限的控制能力,没太多方法控制代码拆分.
 
+
 #### 什么是 ES module
 通过 export import 语句, 允许在浏览器端导入导出模块
+
+
 
 
 ## Webpack hmr实现原理,热更新具体实现
@@ -217,7 +233,7 @@ complteWork： 为当前fiber节点创建真实的dom节点，并将生成好的
 #### 提交阶段（commit）
 commit阶段遍历render阶段形成的effectList，以及执行一些钩子函数。分别三部分
 
-- before mitation：
+- before mutation：
   - 处理dom节点 blur、autofocu 逻辑
   - 调用 getSnapshotBeforeUpdate 生命周期钩子
   - 调度 useEffect
@@ -230,3 +246,5 @@ commit阶段遍历render阶段形成的effectList，以及执行一些钩子函�
   - 获取dom实例 赋值并更新ref
 
 重要： current fiber树的更新在mutation后， layout前
+
+
