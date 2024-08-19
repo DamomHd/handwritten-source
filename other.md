@@ -261,3 +261,13 @@ commit阶段遍历render阶段形成的effectList，以及执行一些钩子函�
 
 ## 依赖包的子依赖有版本异常,怎么处理(间接依赖问题)
 npm overrides使用
+
+
+
+## TS中常用的类型
+Partial 所有属性可选
+Required 所有属性必选
+Reandonly 所有属性只读
+Pick 从T中指定部分属性,创建新接口
+Omit  从T中排除部分属性,创建新接口
+Record 所有属性键都是K, 值都是T Record<string, number>
