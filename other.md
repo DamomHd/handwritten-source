@@ -65,6 +65,14 @@ vite开发环境适用esbuild,虽然快,但输出在构建资源优化方面有�
 通过 export import 语句, 允许在浏览器端导入导出模块
 
 
+## vite 依赖预构建
+
+### 使用预构建原因
+- commonjs、umd兼容
+  转化为esm规范的产物
+- 性能
+  后续页面性能,将许多内部模块的esm依赖项转为单个模块
+
 
 
 ## Webpack hmr实现原理,热更新具体实现
@@ -199,6 +207,8 @@ uid+时间戳+签名
 
 
 
+
+
 ## fiber原理
 react 16版本以上的默认协调器，对react核心算法的重新实现，允许更灵活处理更新、特别是动画、布局、手势
 
@@ -248,3 +258,6 @@ commit阶段遍历render阶段形成的effectList，以及执行一些钩子函�
 重要： current fiber树的更新在mutation后， layout前
 
 
+
+## 依赖包的子依赖有版本异常,怎么处理(间接依赖问题)
+npm overrides使用
