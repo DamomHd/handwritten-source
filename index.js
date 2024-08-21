@@ -4,7 +4,7 @@
  * @Author: hongda_huang
  * @Date: 2020-11-16 11:20:25
  * @LastEditors: Damom Hd 33109486+DamomHd@users.noreply.github.com
- * @LastEditTime: 2024-07-15 15:52:11
+ * @LastEditTime: 2024-08-21 07:30:13
  * @description:
  */
 
@@ -472,3 +472,56 @@ myPromise.any = function(promises) {
 // 测试
 
 
+
+
+// 实现 KOA
+const http  = require('http');
+
+function compose(middlewares) {
+    return ctx => {
+        const dispatch = (i) => {
+            const middleware = middlewares[i];
+            if(i = middlewares.length) return;
+
+            return  middleware(ctx, () => dispatch(i + 1));
+        }
+
+        return dispatch(0)
+    }
+}
+
+class Context {
+    constructor(req, res) {
+        this.req = req
+        this.res = res
+    }
+}
+
+class Application {
+    constructor() {
+        this.middlewares = []
+    }
+
+    listen(...args) {
+        const server = http.createServer(this.callback())
+        server.listen(...args)
+    }
+
+    callback(){
+        return async (req, res) => {
+            const ctx = new Context(req, res);
+            const fn = compose(this.middlewares);
+            try{
+                await fn(ctx)
+            } catch(e){
+                ctx.res.statusCode = 500;
+                ctx.res.end('error')
+            }
+            ctx.res.end(ctx.body)
+        }
+    }
+
+    use(middleware) {
+        this.middlewares.push(middleware)
+    }
+}
