@@ -1,3 +1,5 @@
+https://segmentfault.com/a/1190000044769124
+
 const mypromise = Promise.resolve(Promise.resolve('Promise!'))
 
 function one() {
@@ -76,3 +78,49 @@ console.log('script end')
 // async1 end
 // promise2
 // setTimeout
+
+
+
+const promise1 = new Promise((resolve, reject) => {
+  console.log("1");
+  setTimeout(() => {
+    console.log("2");
+    resolve("success");
+  }, 1000);
+  console.log("3");
+});
+const promise2 = promise1.then(() => {
+  console.log("4");
+});
+const promise3 = (str)=>{
+  console.log(str);
+  return new Promise((resolve, reject) => {
+  	resolve(str);
+   })
+};
+const func = async()=>{
+  const res = await promise3('5');
+  console.log('6');
+  const res2 = await promise3('7');
+  console.log('8');
+}
+func();
+console.log("9");
+setTimeout(() => {
+  console.log("10");
+});
+
+console.log("11");
+
+
+// 1
+// 3
+// 5
+// 9
+// 11
+// 6
+// 7
+// 8
+// 10
+// 2
+// 4

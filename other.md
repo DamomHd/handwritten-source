@@ -281,7 +281,7 @@ commit阶段遍历render阶段形成的effectList，以及执行一些钩子函�
 - this指向,容易出错
 
 ## react hook的优缺点
-优点: 
+优点:
 - 增强函数组件能力
 - 逻辑复用
 - 代码简洁
@@ -298,3 +298,30 @@ Reandonly 所有属性只读
 Pick 从T中指定部分属性,创建新接口
 Omit  从T中排除部分属性,创建新接口
 Record 所有属性键都是K, 值都是T Record<string, number>
+
+## ts 数据类型
+number
+string
+boolean
+array
+tupple
+enum
+any
+void
+null
+undefined
+object
+
+
+## 如何实现跨域
+
+### JSONP
+
+### CORS
+
+### nginx 
+location: {
+  add_header 'Access-Control-Allow-Origin' '*';
+  add_header 'Access-Control-Allow-Methods' 'GET, POST, OPTIONS';
+  add_header 'Access-Control-Allow-Headers' 'DNT,X-Mx-ReqToken,Keep-Alive,User-Agent,X-Requested-With,If-Modified-Since,Cache-Control,Content-Type';
+}
