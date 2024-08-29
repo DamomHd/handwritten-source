@@ -337,3 +337,42 @@ location: {
   add_header 'Access-Control-Allow-Methods' 'GET, POST, OPTIONS';
   add_header 'Access-Control-Allow-Headers' 'DNT,X-Mx-ReqToken,Keep-Alive,User-Agent,X-Requested-With,If-Modified-Since,Cache-Control,Content-Type';
 }
+
+
+
+一、使用浏览器开发者工具
+
+1. 性能面板：可以记录页面加载和运行过程中的各种性能指标，如加载时间、首次绘制时间、首次内容绘制时间、最大内容绘制时间等。还能分析 CPU 和内存的使用情况。
+
+2. 网络面板：查看页面加载过程中各个资源的加载时间、大小和请求状态等，有助于发现网络瓶颈。
+
+二、使用性能监测工具
+
+1. Lighthouse：这是一个由 Google 开发的开源工具，可以对网页进行全面的性能、可访问性、最佳实践等方面的评估，并生成详细的报告。
+
+2. WebPageTest：可以在不同的地理位置和浏览器上测试网页性能，提供丰富的性能指标和可视化结果。
+
+前端开发中通常注重以下性能指标：
+
+一、加载性能指标
+
+1. 首次绘制时间（First Paint，FP）：浏览器首次将任何内容渲染到屏幕上的时间，标志着用户开始看到页面的内容。
+
+2. 首次内容绘制时间（First Contentful Paint，FCP）：浏览器首次渲染 DOM 内容的时间，如文本、图像、非空白的 <canvas> 或 <svg> 元素。
+
+3. 最大内容绘制时间（Largest Contentful Paint，LCP）：代表页面主要内容加载完成的时间，通常是最大的文本块、图像或视频元素加载完成的时间。
+
+4. 加载时间（Load Time）：从页面开始加载到完全加载完成的时间，包括所有资源的加载和执行。
+
+二、交互性能指标
+
+1. 首次输入延迟时间（First Input Delay，FID）：测量用户首次与页面交互（如点击链接、点击按钮等）到浏览器实际能够响应的时间。
+
+2. 交互时间（Time to Interactive，TTI）：表示页面从开始加载到完全可交互的时间，即用户可以流畅地与页面进行交互而不会感到明显的卡顿。
+
+三、资源使用指标
+
+1. CPU 使用率：监测页面在运行过程中对 CPU 的占用情况，过高的 CPU 使用率可能导致页面卡顿或设备发热。
+
+2. 内存使用量：关注页面在不同阶段的内存占用情况，避免内存泄漏导致的性能问题。
+
