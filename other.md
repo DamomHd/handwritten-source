@@ -287,6 +287,18 @@ commit阶段遍历render阶段形成的effectList，以及执行一些钩子函�
 - 代码简洁
 - 更好测试性
 
+## react 18 特性
+- 并发渲染
+- 自动批处理
+- 严格模式变化
+- 流式服务器渲染
+- suspense 更好的支持
+
+## react 19 新特性
+- 优化表单提交、更新 useActionState/useFormStatus/useOptimistic
+- use API
+- Server Components
+
 ## 依赖包的子依赖有版本异常,怎么处理(间接依赖问题)
 npm overrides使用
 
@@ -319,7 +331,7 @@ object
 
 ### CORS
 
-### nginx 
+### nginx
 location: {
   add_header 'Access-Control-Allow-Origin' '*';
   add_header 'Access-Control-Allow-Methods' 'GET, POST, OPTIONS';
